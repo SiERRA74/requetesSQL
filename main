@@ -1,0 +1,89 @@
+Importez le fichier SQL "catalogue.sql" dans une base de donnée nommée "catalogue"
+(il y'a deux erreurs de virgules dans le script, à vous de les trouver)
+
+1]
+-Sélectionnez tous les champs des films sortis après 1960.
+-Sélectionnez le titre des films sortis avant 1960.
+
+SELECT * FROM film WHERE date_sortie > '1960-12-31';
+SELECT `titre` FROM `film` WHERE `date_sortie` < '1960-1-1';
+
+2]
+-Changez la description du film dont l'ID est 35
+
+UPDATE `film` SET `description` = 'toute nouvelle description du film incroyable ayant l\'id 35' WHERE `id`=35;
+
+3]
+-Insérez un nouveau film - Qu'il soit rattaché à au moins trois catégories. Donnez les requêtes SQL utilisées.
+
+
+INSERT INTO `film` (`id`, `titre`, `slug`, `image`, `prix`, `description`, `date_sortie`) VALUES (49 , 'Blade Runner 2049','bladerunner2049', 'https://fr.web.img4.acsta.net/pictures/17/08/24/15/18/597734.jpg', 15 , 'En 2049, des humanoïdes issus du génie biologique, appelés réplicants, ont été intégrés dans la société pour assurer la survie de l\'humanité. K, l\'un des plus récents modèles conçus pour obéir, travaille comme blade runner au LAPD.' , 2017-10-3);
+INSERT INTO `films_categs` (`id_film`,`id_categorie`) VALUES (
+(49, 49),
+(49, 53),
+(49, 51);
+
+
+4]
+-récupérez dans la même requête tous les commentaires du film dont l'ID est 43,
+ tous les champs du film 43, et tous les champs des utilisateurs ayant mis ces commentaires
+
+
+SELECT user.* , commentaire.commentaire, film.* FROM film
+INNER JOIN commentaire ON commentaire.id_film =  film.id
+INNER JOIN user ON commentaire.id_user =  user.id
+WHERE commentaire.id_user = 43;
+
+
+
+5]
+-Supprimez le film dont le slug commence par "t"
+
+
+DELETE FROM `film` WHERE `slug`= 't%';
+
+
+6]
+-Récupérez tous les champs des utilisateurs qui ont mis des commentaires. Il ne doit pas avoir de doublons -
+ un même utilisateur ne doit apparaître qu'une seule fois
+
+
+SELECT DISTINCT * FROM `user`
+INNER JOIN `commentaire` ON `commentaire`.`id_user`= `user`.`id`
+WHERE 
+
+
+7]
+-Récupérez tous les champs des films de la catégorie dont l'ID est 51
+
+
+SELECT * FROM film 
+INNER JOIN films_categs ON films_categs.id_film = film.id
+WHERE films_categs.id_categorie = 51;
+
+
+8]
+-faites la moyenne des notes des films du site
+
+
+SELECT film.titre , AVG(note)
+FROM  commentaire
+INNER JOIN film ON film.id = commentaire.id_film
+GROUP BY commentaire.note;
+
+
+9]
+-Récupérez tous les films sortis au mois de juin
+
+
+SELECT titre FROM film WHERE date_sortie = '%-6-%';
+
+
+10]
+-Récupérez tous les utilisateurs dont le role est 1 et qui ont postés des commentaires.
+ Il ne doit pas y avoir de doublon.
+
+
+SELECT DISTINCT user.* FROM user
+INNER JOIN commentaire ON commentaire.id_user = user.id
+WHERE user.role = 1;
